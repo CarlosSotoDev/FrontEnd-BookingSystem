@@ -1,0 +1,94 @@
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl mb-4">Promotion List</h1>
+  
+    <!-- Search bar and search button -->
+    <div class="mb-4 flex">
+      <input 
+        type="text" 
+        placeholder="Search by Hotel Name" 
+        [(ngModel)]="searchHotelName" 
+        class="border border-gray-400 p-2 w-1/3 rounded-l" />
+      <input 
+        type="text" 
+        placeholder="Search by Destination" 
+        [(ngModel)]="searchDestination" 
+        class="border border-gray-400 p-2 w-1/3 rounded-l ml-2" />
+      <button 
+        (click)="searchPromotions()" 
+        class="bg-blue-500 text-white p-2 ml-2 rounded">
+        Search
+      </button>
+    </div>
+  
+    <!-- Button to create a new promotion -->
+    <div class="mb-4">
+      <button (click)="openCreateModal()" class="bg-green-500 text-white p-2 rounded">
+        Create New Promotion
+      </button>
+    </div>
+  
+    <!-- Modal for creating a new promotion -->
+    <div *ngIf="showCreateModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white p-6 rounded shadow-lg w-1/3">
+        <h2 class="text-xl mb-4">Create New Promotion</h2>
+  
+        <!-- Dropdown to select the destination (city) -->
+        <div class="mb-4">
+          <label class="block text-gray-700">Select Destination:</label>
+          <select [(ngModel)]="selectedCity" (change)="filterHotelsByCity()" class="border p-2 w-full rounded">
+            <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+          </select>
+        </div>
+  
+        <!-- Dropdown to select the hotel based on city -->
+        <div class="mb-4">
+          <label class="block text-gray-700">Select Hotel:</label>
+          <select [(ngModel)]="selectedHotelId" class="border p-2 w-full rounded">
+            <option *ngFor="let hotel of hotels" [value]="hotel.id">{{ hotel.hotelName }}</option>
+          </select>
+        </div>
+  
+        <!-- Buttons for canceling or creating the promotion -->
+        <div class="flex justify-end">
+          <button (click)="closeCreateModal()" class="bg-gray-500 text-white p-2 rounded mr-2">
+            Cancel
+          </button>
+          <button (click)="createPromotion()" class="bg-blue-500 text-white p-2 rounded">
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Display promotions table -->
+    <div *ngIf="promotions.length > 0">
+      <table class="table-auto w-full border-collapse border border-gray-400">
+        <thead>
+          <tr class="bg-gray-800 text-white">
+            <th class="border border-gray-400 p-2">Hotel</th>
+            <th class="border border-gray-400 p-2">City</th>
+            <th class="border border-gray-400 p-2">Flight Origin</th>
+            <th class="border border-gray-400 p-2">Destination</th>
+            <th class="border border-gray-400 p-2">Price for 3 Nights</th>
+            <th class="border border-gray-400 p-2">Price for 5 Nights</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let promotion of promotions" class="text-center">
+            <td class="border border-gray-400 p-2">{{ promotion.hotel.hotelName }}</td>
+            <td class="border border-gray-400 p-2">{{ promotion.hotel.city }}</td>
+            <td class="border border-gray-400 p-2">{{ promotion.flight.cityOrigin }}</td>
+            <td class="border border-gray-400 p-2">{{ promotion.flight.destination }}</td>
+            <td class="border border-gray-400 p-2">{{ promotion.totalPrice3Nights | currency }}</td>
+            <td class="border border-gray-400 p-2">{{ promotion.totalPrice5Nights | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Message if no promotions are found -->
+    <div *ngIf="promotions.length === 0" class="text-center mt-4">
+      <p>No promotions found.</p>
+    </div>
+  </div>
+  
