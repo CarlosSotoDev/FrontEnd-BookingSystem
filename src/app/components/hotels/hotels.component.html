@@ -5,46 +5,46 @@
   <div class="mb-4 flex">
     <input 
       type="text" 
-      placeholder="Buscar hotel por nombre..." 
+      placeholder="Serch Hotel by name..." 
       [(ngModel)]="searchHotelName" 
       class="border border-gray-400 p-2 w-1/3 rounded-l" />
     <input 
       type="text" 
-      placeholder="Buscar hotel por ciudad..." 
+      placeholder="Find by City..." 
       [(ngModel)]="searchCity" 
       class="border border-gray-400 p-2 w-1/3 rounded-l ml-2" />
     <button 
       (click)="searchHotels()" 
       class="bg-blue-500 text-white p-2 ml-2 rounded">
-      Buscar
+      Search
     </button>
   </div>
 
   <!-- Botón para crear un nuevo registro -->
   <div class="mb-4">
     <button (click)="openCreateModal()" class="bg-green-500 text-white p-2 rounded">
-      Crear Registro
+      Create Register
     </button>
   </div>
 
   <!-- Modal para crear un nuevo hotel -->
   <div *ngIf="showCreateModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-4 rounded shadow-lg w-1/3">
-      <h2 class="text-xl mb-4">Crear Nuevo Hotel</h2>
+      <h2 class="text-xl mb-4">Create new hotel</h2>
       <div class="mb-2">
-        <label class="block">Nombre del Hotel:</label>
+        <label class="block">Hotel's name:</label>
         <input type="text" [(ngModel)]="newHotel.hotelName" class="border p-2 w-full" />
       </div>
       <div class="mb-2">
-        <label class="block">Ciudad:</label>
+        <label class="block">City:</label>
         <input type="text" [(ngModel)]="newHotel.city" class="border p-2 w-full" />
       </div>
       <div class="mb-2">
-        <label class="block">Fecha de Check-in:</label>
+        <label class="block">Checkin Date:</label>
         <input type="date" [(ngModel)]="newHotel.checkinDate" class="border p-2 w-full" />
       </div>
       <div class="mb-2">
-        <label class="block">Precio por noche:</label>
+        <label class="block">Price per Night:</label>
         <input type="number" [(ngModel)]="newHotel.pricePerNight" class="border p-2 w-full" />
       </div>
       <div class="flex justify-end">
@@ -61,29 +61,29 @@
   <!-- Modal para editar un hotel -->
   <div *ngIf="showEditModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-4 rounded shadow-lg w-1/3">
-      <h2 class="text-xl mb-4">Editar Hotel</h2>
+      <h2 class="text-xl mb-4">Update Hotel</h2>
       <div class="mb-2">
-        <label class="block">Nombre del Hotel:</label>
+        <label class="block">Hotel's Name:</label>
         <input type="text" [(ngModel)]="selectedHotel.hotelName" class="border p-2 w-full" />
       </div>
       <div class="mb-2">
-        <label class="block">Ciudad:</label>
+        <label class="block">City:</label>
         <input type="text" [(ngModel)]="selectedHotel.city" class="border p-2 w-full" />
       </div>
       <div class="mb-2">
-        <label class="block">Fecha de Check-in:</label>
+        <label class="block">Checkin Date:</label>
         <input type="date" [(ngModel)]="selectedHotel.checkinDate" class="border p-2 w-full" />
       </div>
       <div class="mb-2">
-        <label class="block">Precio por noche:</label>
+        <label class="block">Price per Night:</label>
         <input type="number" [(ngModel)]="selectedHotel.pricePerNight" class="border p-2 w-full" />
       </div>
       <div class="flex justify-end">
         <button (click)="closeEditModal()" class="bg-gray-500 text-white p-2 rounded mr-2">
-          Cancelar
+          Cancel
         </button>
         <button (click)="updateHotel()" class="bg-blue-500 text-white p-2 rounded">
-          Actualizar
+          Update
         </button>
       </div>
     </div>
@@ -91,12 +91,12 @@
 
   <!-- Mostrar indicador de carga -->
   <div *ngIf="isLoading" class="text-center">
-    <p>Cargando hoteles...</p>
+    <p>Loading Hotels...</p>
   </div>
 
   <!-- Mostrar mensaje si no hay hoteles -->
   <div *ngIf="!isLoading && hotels.length === 0" class="text-center">
-    <p>No se encontraron hoteles.</p>
+    <p>No hotels found.</p>
   </div>
 
   <!-- Mostrar tabla de hoteles -->
@@ -104,11 +104,11 @@
     <table class="table-auto w-full border-collapse border border-gray-400">
       <thead>
         <tr class="bg-gray-800 text-white">
-          <th class="border border-gray-400 p-2">Nombre del Hotel</th>
-          <th class="border border-gray-400 p-2">Ciudad</th>
-          <th class="border border-gray-400 p-2">Fecha de Check-in</th>
-          <th class="border border-gray-400 p-2">Precio por noche</th>
-          <th class="border border-gray-400 p-2">Acciones</th>
+          <th class="border border-gray-400 p-2">Hotel's name</th>
+          <th class="border border-gray-400 p-2">City</th>
+          <th class="border border-gray-400 p-2">Checkin Date</th>
+          <th class="border border-gray-400 p-2">Price Per Night/th>
+          <th class="border border-gray-400 p-2">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -119,10 +119,10 @@
           <td class="border border-gray-400 p-2">{{ hotel.pricePerNight | currency }}</td>
           <td class="border border-gray-400 p-2">
             <button (click)="openEditModal(hotel)" class="bg-blue-500 text-white p-2 rounded">
-              Editar
+              Update
             </button>
             <button *ngIf="hotel.id" (click)="deleteHotel(hotel.id)" class="bg-red-500 text-white p-2 rounded ml-2">
-              Eliminar
+              Delete
             </button>
           </td>
         </tr>
