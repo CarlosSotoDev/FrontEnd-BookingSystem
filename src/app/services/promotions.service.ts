@@ -17,9 +17,19 @@ export class PromotionsService {
   }
 
   createPromotion(hotelId: number, flightId: number): Observable<PromotionsDTO> {
-    return this.http.post<PromotionsDTO>(`${this.apiUrl}/promotionsservice/api/v1/promotions/create`, null, {
-      params: { hotelId: hotelId.toString(), flightId: flightId.toString() },
-    });
+    if (!hotelId || !flightId) {
+      throw new Error('Hotel ID and Flight ID must be provided.');
+    }
+    return this.http.post<PromotionsDTO>(
+      `${this.apiUrl}/promotionsservice/api/v1/promotions/create`,
+      null,
+      {
+        params: {
+          hotelId: hotelId.toString(),
+          flightId: flightId.toString(),
+        },
+      }
+    );
   }
 
   getFlightsByCity(city: string): Observable<any[]> {
@@ -34,5 +44,4 @@ export class PromotionsService {
   getUniqueDestinations(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/fligthservice/api/v1/flights/destinations`);
   }
-  
 }

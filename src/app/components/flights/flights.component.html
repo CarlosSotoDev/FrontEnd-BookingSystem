@@ -1,114 +1,144 @@
 <div class="container mx-auto p-4">
-  <h1 class="text-2xl mb-4">Lista de Vuelos</h1>
+  <h1 class="text-2xl mb-4">List of Flights</h1>
 
-  <!-- Barra de búsqueda y botón de buscar -->
+  <!-- Barra de búsqueda -->
   <div class="mb-4 flex">
     <input 
       type="text" 
-      placeholder="Search Flight by City Origen..." 
+      placeholder="Search Flight by City Origin..." 
       [(ngModel)]="searchCityOrigin" 
       class="border border-gray-400 p-2 w-1/3 rounded-l" />
     <input 
       type="text" 
-      placeholder="Search flight by destination.." 
+      placeholder="Search Flight by Destination..." 
       [(ngModel)]="searchDestination" 
       class="border border-gray-400 p-2 w-1/3 rounded-l ml-2" />
     <button 
       (click)="searchFlights()" 
       class="bg-blue-500 text-white p-2 ml-2 rounded">
-      Buscar
+      Search
     </button>
   </div>
 
-  <!-- Botón para crear un nuevo registro -->
+  <!-- Botón para crear un nuevo vuelo -->
   <div class="mb-4">
-    <button (click)="openCreateModal()" class="bg-green-500 text-white p-2 rounded">
+    <button 
+      (click)="openCreateModal()" 
+      class="bg-green-500 text-white p-2 rounded">
       Create Register
     </button>
   </div>
 
-  <!-- Modal para crear un nuevo vuelo -->
+  <!-- Modal para crear un vuelo -->
   <div *ngIf="showCreateModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-4 rounded shadow-lg w-1/3">
-      <h2 class="text-xl mb-4">CCreate new flight</h2>
+      <h2 class="text-xl mb-4">Create New Flight</h2>
       <div class="mb-2">
         <label class="block">City Origin:</label>
-        <input type="text" [(ngModel)]="newFlight.cityOrigin" class="border p-2 w-full" />
+        <input 
+          type="text" 
+          [(ngModel)]="newFlight.cityOrigin" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Destination:</label>
-        <input type="text" [(ngModel)]="newFlight.destination" class="border p-2 w-full" />
+        <input 
+          type="text" 
+          [(ngModel)]="newFlight.destination" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Departure Date:</label>
-        <input type="date" [(ngModel)]="newFlight.departureDate" class="border p-2 w-full" />
+        <input 
+          type="date" 
+          [(ngModel)]="newFlight.departureDate" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Departure Time:</label>
-        <input type="time" [(ngModel)]="newFlight.departureTime" class="border p-2 w-full" />
+        <input 
+          type="time" 
+          [(ngModel)]="newFlight.departureTime" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Price:</label>
-        <input type="number" [(ngModel)]="newFlight.price" class="border p-2 w-full" />
+        <input 
+          type="number" 
+          [(ngModel)]="newFlight.price" 
+          class="border p-2 w-full" />
       </div>
       <div class="flex justify-end">
-        <button (click)="closeCreateModal()" class="bg-gray-500 text-white p-2 rounded mr-2">
+        <button 
+          (click)="closeCreateModal()" 
+          class="bg-gray-500 text-white p-2 rounded mr-2">
           Cancel
         </button>
-        <button (click)="createFlight()" class="bg-green-500 text-white p-2 rounded">
+        <button 
+          (click)="createFlight()" 
+          class="bg-green-500 text-white p-2 rounded">
           Create
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Modal para editar un vuelo -->
+  <!-- Modal para actualizar un vuelo -->
   <div *ngIf="showEditModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-4 rounded shadow-lg w-1/3">
       <h2 class="text-xl mb-4">Update Flight</h2>
       <div class="mb-2">
-        <label class="block">City  Origin:</label>
-        <input type="text" [(ngModel)]="selectedFlight.cityOrigin" class="border p-2 w-full" />
+        <label class="block">City Origin:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="selectedFlight.cityOrigin" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Destination:</label>
-        <input type="text" [(ngModel)]="selectedFlight.destination" class="border p-2 w-full" />
+        <input 
+          type="text" 
+          [(ngModel)]="selectedFlight.destination" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Departure Date:</label>
-        <input type="date" [(ngModel)]="selectedFlight.departureDate" class="border p-2 w-full" />
+        <input 
+          type="date" 
+          [(ngModel)]="selectedFlight.departureDate" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Departure Time:</label>
-        <input type="time" [(ngModel)]="selectedFlight.departureTime" class="border p-2 w-full" />
+        <input 
+          type="time" 
+          [(ngModel)]="selectedFlight.departureTime" 
+          class="border p-2 w-full" />
       </div>
       <div class="mb-2">
         <label class="block">Price:</label>
-        <input type="number" [(ngModel)]="selectedFlight.price" class="border p-2 w-full" />
+        <input 
+          type="number" 
+          [(ngModel)]="selectedFlight.price" 
+          class="border p-2 w-full" />
       </div>
       <div class="flex justify-end">
-        <button (click)="closeEditModal()" class="bg-gray-500 text-white p-2 rounded mr-2">
+        <button 
+          (click)="closeEditModal()" 
+          class="bg-gray-500 text-white p-2 rounded mr-2">
           Cancel
         </button>
-        <button (click)="updateFlight()" class="bg-blue-500 text-white p-2 rounded">
+        <button 
+          (click)="updateFlight()" 
+          class="bg-blue-500 text-white p-2 rounded">
           Update
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Mostrar indicador de carga -->
-  <div *ngIf="isLoading" class="text-center">
-    <p>Loading Flights...</p>
-  </div>
-
-  <!-- Mostrar mensaje si no hay vuelos -->
-  <div *ngIf="!isLoading && flights.length === 0" class="text-center">
-    <p>No flights Found.</p>
-  </div>
-
-  <!-- Mostrar tabla de vuelos -->
-  <div *ngIf="!isLoading && flights.length > 0">
+  <!-- Tabla con vuelos -->
+  <div *ngIf="!isLoading && displayedFlights.length > 0">
     <table class="table-auto w-full border-collapse border border-gray-400">
       <thead>
         <tr class="bg-gray-800 text-white">
@@ -121,22 +151,56 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let flight of flights" class="text-center">
+        <tr *ngFor="let flight of displayedFlights" class="text-center">
           <td class="border border-gray-400 p-2">{{ flight.cityOrigin }}</td>
           <td class="border border-gray-400 p-2">{{ flight.destination }}</td>
           <td class="border border-gray-400 p-2">{{ flight.departureDate | date }}</td>
           <td class="border border-gray-400 p-2">{{ flight.departureTime }}</td>
           <td class="border border-gray-400 p-2">{{ flight.price | currency }}</td>
           <td class="border border-gray-400 p-2">
-            <button (click)="openEditModal(flight)" class="bg-blue-500 text-white p-2 rounded">
+            <button 
+              (click)="openEditModal(flight)" 
+              class="bg-blue-500 text-white p-2 rounded">
               Edit
             </button>
-            <button *ngIf="flight.id" (click)="deleteFlight(flight.id)" class="bg-red-500 text-white p-2 rounded ml-2">
+            <button 
+              *ngIf="flight.id !== undefined" 
+              (click)="deleteFlight(flight.id)" 
+              class="bg-red-500 text-white p-2 rounded ml-2">
               Delete
             </button>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- Paginación -->
+  <div *ngIf="totalPages > 1" class="flex justify-center mt-4">
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="bg-gray-500 text-white px-4 py-2 rounded-l disabled:bg-gray-300"
+    >
+      Previous
+    </button>
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      (click)="goToPage(i + 1)"
+      [class.bg-blue-500]="currentPage === i + 1"
+      [class.text-white]="currentPage === i + 1"
+      [class.bg-gray-300]="currentPage !== i + 1"
+      [class.text-black]="currentPage !== i + 1"
+      class="px-4 py-2"
+    >
+      {{ i + 1 }}
+    </button>
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="bg-gray-500 text-white px-4 py-2 rounded-r disabled:bg-gray-300"
+    >
+      Next
+    </button>
   </div>
 </div>
