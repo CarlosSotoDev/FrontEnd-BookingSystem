@@ -14,6 +14,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class HotelsComponent implements OnInit {
   hotels: Hotel[] = [];
+  displayedHotels: Hotel[] = [];
   isLoading: boolean = false;
 
   // Variables para búsqueda
@@ -39,6 +40,11 @@ export class HotelsComponent implements OnInit {
     pricePerNight: 0,
   };
 
+  // Variables de paginación
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalPages: number = 0;
+
   constructor(private hotelService: HotelService) {}
 
   ngOnInit(): void {
@@ -49,27 +55,57 @@ export class HotelsComponent implements OnInit {
     this.isLoading = true;
     try {
       this.hotels = await firstValueFrom(this.hotelService.getAllHotels());
-      this.isLoading = false;
+      this.totalPages = Math.ceil(this.hotels.length / this.itemsPerPage);
+      this.updateDisplayedHotels();
     } catch (error) {
       console.error('Error fetching hotels:', error);
+    } finally {
       this.isLoading = false;
+    }
+  }
+
+  updateDisplayedHotels() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.displayedHotels = this.hotels.slice(start, end);
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updateDisplayedHotels();
     }
   }
 
   async searchHotels() {
     this.isLoading = true;
     try {
-      this.hotels = await firstValueFrom(
-        this.hotelService.searchHotels(this.searchHotelName, this.searchCity)
-      );
-      this.isLoading = false;
+      // Obtener todos los hoteles desde el backend
+      const allHotels = await firstValueFrom(this.hotelService.getAllHotels());
+      
+      // Filtrar en el frontend usando coincidencias parciales
+      const searchName = this.searchHotelName.toLowerCase();
+      const searchCity = this.searchCity.toLowerCase();
+  
+      this.hotels = allHotels.filter(hotel => {
+        const matchesName = hotel.hotelName?.toLowerCase().includes(searchName); // Verificar coincidencias en el nombre
+        const matchesCity = hotel.city?.toLowerCase().includes(searchCity);     // Verificar coincidencias en la ciudad
+        return matchesName || matchesCity; // Incluir si coincide con cualquiera de los dos
+      });
+  
+      // Actualizar la paginación después de filtrar
+      this.totalPages = Math.ceil(this.hotels.length / this.itemsPerPage);
+      this.currentPage = 1;
+      this.updateDisplayedHotels();
     } catch (error) {
       console.error('Error searching hotels:', error);
+    } finally {
       this.isLoading = false;
     }
   }
+  
+  
 
-  // Abrir modal de creación
   openCreateModal() {
     this.showCreateModal = true;
     this.newHotel = {
@@ -80,34 +116,35 @@ export class HotelsComponent implements OnInit {
     };
   }
 
-  // Cerrar modal de creación
   closeCreateModal() {
     this.showCreateModal = false;
   }
 
-  // Crear nuevo hotel
   async createHotel() {
     try {
-      const createdHotel = await firstValueFrom(this.hotelService.createHotel(this.newHotel as Hotel));
-      this.hotels.push(createdHotel); // Agregar el nuevo hotel a la lista
-      this.closeCreateModal(); // Cerrar el modal después de crear
+      const createdHotel = await firstValueFrom(
+        this.hotelService.createHotel(this.newHotel as Hotel)
+      );
+      this.hotels.push(createdHotel);
+      this.totalPages = Math.ceil(this.hotels.length / this.itemsPerPage);
+      this.updateDisplayedHotels();
+      this.closeCreateModal();
       alert('El hotel fue creado con éxito.');
     } catch (error) {
       console.error('Error creating hotel:', error);
     }
   }
 
-  // Abrir modal de edición
   openEditModal(hotel: Hotel) {
-    this.selectedHotel = { ...hotel }; // Copiar los datos del hotel seleccionado
-    this.showEditModal = true;
+    this.selectedHotel = { ...hotel }; // Copia los datos del hotel seleccionado
+    this.showEditModal = true; // Muestra el modal de edición
   }
 
-  // Cerrar modal de edición
   closeEditModal() {
-    this.showEditModal = false; // Cerrar el modal
-    this.selectedHotel = { // Limpiar el objeto seleccionado
-      id: 0,
+    this.showEditModal = false; // Cierra el modal de edición
+    this.selectedHotel = {
+      // Resetea los datos del hotel seleccionado
+      id: undefined,
       hotelName: '',
       city: '',
       checkinDate: '',
@@ -115,59 +152,52 @@ export class HotelsComponent implements OnInit {
     };
   }
 
-  // Actualizar hotel
   async updateHotel() {
     if (this.selectedHotel.id !== undefined) {
       try {
-        // Enviamos la petición de actualización al backend
         const updatedHotel = await firstValueFrom(
-          this.hotelService.updateHotel(this.selectedHotel.id, this.selectedHotel as Hotel)
+          this.hotelService.updateHotel(
+            this.selectedHotel.id,
+            this.selectedHotel as Hotel
+          )
         );
-  
         if (updatedHotel) {
-          // Actualizamos la lista de hoteles localmente con los datos actualizados
-          const index = this.hotels.findIndex(h => h.id === this.selectedHotel.id);
+          const index = this.hotels.findIndex(
+            (h) => h.id === this.selectedHotel.id
+          );
           if (index !== -1) {
-            this.hotels[index] = updatedHotel; // Actualizamos el hotel en la lista
+            this.hotels[index] = updatedHotel;
           }
-  
-          // Mostramos una alerta de éxito
+          this.updateDisplayedHotels();
           alert('El hotel fue actualizado con éxito.');
-  
-          // Cerramos el modal
-          this.closeEditModal(); // Cerrar el modal después de actualizar
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error('Error actualizando el hotel:', error);
-  
-        // Cerramos el modal incluso si hubo un error
+        alert('Hubo un problema actualizando el hotel.');
+      } finally {
         this.closeEditModal();
-  
-        // Verificamos si el error tiene un estatus
-        if (error.status && error.status !== 200) {
-          alert('Hubo un problema actualizando el hotel.');
-        }
       }
-    } else {
-      console.error('El ID del hotel es indefinido');
     }
   }
-  
-  
-  
 
-  // Eliminar hotel
-  async deleteHotel(hotelId: number) {
-    try {
-      const response = await firstValueFrom(this.hotelService.deleteHotel(hotelId));
-      if (response.status === 204 || response.status === 200) {
-        this.hotels = this.hotels.filter((hotel) => hotel.id !== hotelId);
-        alert('El hotel fue eliminado con éxito.'); // Alerta al eliminar
-      } else {
-        console.error('No se pudo eliminar el hotel.');
+  async deleteHotel(hotelId: number | undefined) {
+    if (hotelId !== undefined) {
+      try {
+        const response = await firstValueFrom(
+          this.hotelService.deleteHotel(hotelId)
+        );
+        if (response.status === 204 || response.status === 200) {
+          this.hotels = this.hotels.filter((hotel) => hotel.id !== hotelId);
+          this.totalPages = Math.ceil(this.hotels.length / this.itemsPerPage);
+          this.updateDisplayedHotels();
+          alert('El hotel fue eliminado con éxito.');
+        }
+      } catch (error) {
+        console.error('Error eliminando el hotel:', error);
+        alert('Hubo un problema eliminando el hotel.');
       }
-    } catch (error) {
-      console.error('Error eliminando el hotel:', error);
+    } else {
+      alert('No se puede eliminar el hotel porque no tiene un ID válido.');
     }
   }
 }

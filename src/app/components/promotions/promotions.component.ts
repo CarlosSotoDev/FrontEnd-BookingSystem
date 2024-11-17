@@ -31,12 +31,18 @@ export class PromotionsComponent implements OnInit {
   }
 
   async loadPromotions(): Promise<void> {
-    this.promotions = await firstValueFrom(this.promotionsService.getPromotions());
+    try {
+      this.promotions = await firstValueFrom(this.promotionsService.getPromotions());
+      console.log('Promotions loaded:', this.promotions);
+    } catch (error) {
+      console.error('Error loading promotions:', error);
+    }
   }
 
   async loadCities(): Promise<void> {
     try {
       this.cities = await firstValueFrom(this.promotionsService.getUniqueDestinations());
+      console.log('Cities loaded:', this.cities);
     } catch (error) {
       console.error('Error loading destinations:', error);
     }
@@ -46,6 +52,7 @@ export class PromotionsComponent implements OnInit {
     if (this.selectedCity) {
       try {
         this.hotels = await firstValueFrom(this.promotionsService.getHotelsByCity(this.selectedCity));
+        console.log(`Hotels for city ${this.selectedCity}:`, this.hotels);
       } catch (error) {
         console.error('Error loading hotels by city:', error);
       }
@@ -55,10 +62,14 @@ export class PromotionsComponent implements OnInit {
   }
 
   async openCreateModal(): Promise<void> {
-    await this.loadCities(); // Asegura cargar las ciudades antes de mostrar el modal
-    this.showCreateModal = true;
-    this.selectedCity = '';
-    this.selectedHotelId = undefined;
+    try {
+      await this.loadCities();
+      this.showCreateModal = true;
+      this.selectedCity = '';
+      this.selectedHotelId = undefined;
+    } catch (error) {
+      console.error('Error opening create modal:', error);
+    }
   }
 
   closeCreateModal(): void {
@@ -66,18 +77,26 @@ export class PromotionsComponent implements OnInit {
   }
 
   async createPromotion(): Promise<void> {
-    if (this.selectedHotelId) {
-      const flightId = 1; // Asume que tienes el id de vuelo correcto
-      try {
-        const newPromotion = await firstValueFrom(
-          this.promotionsService.createPromotion(this.selectedHotelId, flightId)
-        );
-        this.promotions.push(newPromotion);
-        this.closeCreateModal();
-        alert('Promotion created successfully');
-      } catch (error) {
-        console.error('Error creating promotion:', error);
-      }
+    console.log('Selected Hotel ID:', this.selectedHotelId);
+    const flightId = 1; // Placeholder ID; adjust if necessary
+    console.log('Flight ID:', flightId);
+
+    if (!this.selectedHotelId) {
+      alert('Please select a valid hotel.');
+      return;
+    }
+
+    try {
+      const newPromotion = await firstValueFrom(
+        this.promotionsService.createPromotion(this.selectedHotelId, flightId)
+      );
+      console.log('Promotion created successfully:', newPromotion);
+      this.promotions.push(newPromotion);
+      this.closeCreateModal();
+      alert('Promotion created successfully');
+    } catch (error) {
+      console.error('Error creating promotion:', error);
+      alert('Failed to create promotion. Please check the backend and logs.');
     }
   }
 
